@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2566">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!-- Interactive map prototype using Mapbox and Vue.js --&gt;</p>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Interactive Map Website&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.jsdelivr.net/npm/vue@2"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body, html {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: Arial, sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#app {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#map {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex: 1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.dropdown {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.mapboxgl-popup-content {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #353535;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.mapboxgl-popup-tip {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-top-color: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="app"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="dropdown"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;label for="country-filter"&gt;Filter by Country:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;select id="country-filter" v-model="selectedCountry" @change="filterMap"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value=""&gt;Select a country&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value="USA"&gt;USA&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value="Colombia"&gt;Colombia&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value="Venezuela"&gt;Venezuela&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value="Dominican Republic"&gt;Dominican Republic&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value="Mexico"&gt;Mexico&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="map"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>new Vue({</p>
+<p class="p1"><span class="Apple-converted-space">            </span>el: '#app',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>data: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>map: null,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>selectedCountry: '',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>venues: [</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 1, name: 'Valencia', coordinates: [-68.0158, 10.1620], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 2, name: 'Valencia', coordinates: [-68.0158, 10.1620], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 3, name: 'Santo Domingo', coordinates: [-69.9312, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 4, name: 'Caracas', coordinates: [-66.9036, 10.4806], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 5, name: 'Santo Domingo (West)', coordinates: [-69.9778, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 6, name: 'Valencia', coordinates: [-68.0158, 10.1620], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 7, name: 'San Cristobal', coordinates: [-72.2231, 7.7669], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 8, name: 'Santo Domingo (West)', coordinates: [-69.9778, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 9, name: 'Barquisimeto', coordinates: [-69.3517, 10.0678], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 10, name: 'San Cristobal', coordinates: [-72.2231, 7.7669], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 11, name: 'Santo Domingo (East)', coordinates: [-69.8509, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 12, name: 'Medellin', coordinates: [-75.567, 6.2518], country: 'Colombia' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 13, name: 'Valencia', coordinates: [-68.0158, 10.1620], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 14, name: 'Santo Domingo', coordinates: [-69.9312, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 15, name: 'Maracaibo', coordinates: [-71.6406, 10.6545], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 16, name: 'Santo Domingo (East)', coordinates: [-69.8509, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 17, name: 'Santo Domingo (East)', coordinates: [-69.8509, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 18, name: 'Santo Domingo (East)', coordinates: [-69.8509, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 19, name: 'Santo Domingo (East)', coordinates: [-69.8509, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 20, name: 'Santo Domingo (East)', coordinates: [-69.8509, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 21, name: 'Puerto La Cruz', coordinates: [-64.6288, 10.2142], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 22, name: 'Santo Domingo (West)', coordinates: [-69.9778, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 23, name: 'Santo Domingo (West)', coordinates: [-69.9778, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 24, name: 'Maracay', coordinates: [-67.5901, 10.2354], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 25, name: 'San Pedro', coordinates: [-69.3426, 18.5556], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 26, name: 'San Pedro', coordinates: [-69.3426, 18.5556], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 27, name: 'Maracaibo', coordinates: [-71.6406, 10.6545], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 28, name: 'Oaxaca', coordinates: [-96.7266, 17.0594], country: 'Mexico' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 29, name: 'Mazatlan', coordinates: [-106.4245, 23.2494], country: 'Mexico' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 30, name: 'Santo Domingo (West)', coordinates: [-69.9778, 18.4861], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 31, name: 'Punta Cana', coordinates: [-68.3669, 18.5820], country: 'Dominican Republic' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 32, name: 'Valencia', coordinates: [-68.0158, 10.1620], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 33, name: 'Puerto La Cruz', coordinates: [-64.6288, 10.2142], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 34, name: 'Puerto La Cruz', coordinates: [-64.6288, 10.2142], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 35, name: 'Maracay', coordinates: [-67.5901, 10.2354], country: 'Venezuela' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ id: 36, name: 'Isla Margarita', coordinates: [-63.8979, 10.9737], country: 'Venezuela' }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>]</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mounted() {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>mapboxgl.accessToken = 'pk.eyJ1Ijoic2ViYXNjb3JyZWEwNSIsImEiOiJjbTM4eDA4cTQweTdsMmpxMmcwbmxpbWd4In0.ASpWAN9EICCNn9wKwcW1kQ';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>this.map = new mapboxgl.Map({</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>container: 'map',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>style: 'mapbox://styles/mapbox/light-v10',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>center: [-75.567, 6.2518],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>zoom: 2</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>this.map.addControl(new mapboxgl.NavigationControl());</p>
+<p class="p1"><span class="Apple-converted-space">                </span>this.addVenues();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>methods: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>addVenues() {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const { venues } = this;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const markers = [];</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>venues.forEach((venue) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const marker = new mapboxgl.Marker({</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>color: '#3c6e71'</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>})</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>.setLngLat(venue.coordinates)</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>.setPopup(new mapboxgl.Popup().setHTML(`&lt;h3&gt;${venue.name}&lt;/h3&gt;&lt;p&gt;More details...&lt;/p&gt;`))</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>.addTo(this.map);</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>markers.push(marker);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>},</p>
+<p class="p1"><span class="Apple-converted-space">                </span>filterMap() {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (this.selectedCountry) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const filteredVenues = this.venues.filter(venue =&gt; venue.country === this.selectedCountry);</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>if (filteredVenues.length &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>const bounds = new mapboxgl.LngLatBounds();</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>filteredVenues.forEach(venue =&gt; bounds.extend(venue.coordinates));</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>this.map.fitBounds(bounds, { padding: 50 });</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
